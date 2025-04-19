@@ -1,2 +1,2 @@
 # csuoi
-My computer since projects grouped
+My computer science projects grouped
