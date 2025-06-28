@@ -1,0 +1,3 @@
+[submodule "operating-systems/assignment_1/kissdb"]
+	path = operating-systems/assignment_1/kissdb
+	url = https://github.com/adamierymenko/kissdb
