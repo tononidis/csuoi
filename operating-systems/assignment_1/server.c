@@ -1,5 +1,5 @@
 // Stefanos Tononidis 2833
-// Drivas Panagiotis 2690
+// Panagiotis Drivas 2690
 
 #include "common.h"
 #include "kissdb/kissdb.h"
