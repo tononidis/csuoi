@@ -1,4 +1,4 @@
-# Operating systems MYY702
+# Computer Graphics And Interactive Systems MYY702
 
 More info at https://www.cse.uoi.gr/course/computer-graphics-and-interactive-systems
 
