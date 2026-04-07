@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "debug",
+      "cacheVariables": {
+        "VCPKG_ROOT": "../../submodules/vcpkg",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    }
+  ]
+}

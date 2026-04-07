@@ -1,0 +1,11 @@
+{
+    "name": "braxapsaiii",
+    "description": "A candycrash-like game implemented in C++ using OpenGL and GLFW.",
+    "dependencies": [
+        "freeglut",
+        "libx11",
+        "stb",
+        "opengl",
+        "spdlog"
+    ]
+}

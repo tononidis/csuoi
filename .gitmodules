@@ -1,3 +1,6 @@
 [submodule "operating-systems/assignment_1/kissdb"]
 	path = operating-systems/assignment_1/kissdb
 	url = https://github.com/adamierymenko/kissdb
+[submodule "submodules/vcpkg"]
+	path = submodules/vcpkg
+	url = https://github.com/microsoft/vcpkg
