@@ -9,17 +9,17 @@
 namespace BraXaPsaIII {
 
 struct Cube {
-    static constexpr float size = 1.0f / Config::GRID_SIZE;
+    static constexpr float s_size = 1.0f / Config::GRID_SIZE;
 
     static constexpr GLfloat s_vertices[8][3] = {
         { 0, 0, 0 }, // P0
-        { 0, size, 0 }, // P1
-        { size, size, 0 }, // P2
-        { size, 0, 0 }, // P3
-        { 0, 0, size }, // P4
-        { size, 0, size }, // P5
-        { size, size, size }, // P6
-        { 0, size, size } // P7
+        { 0, s_size, 0 }, // P1
+        { s_size, s_size, 0 }, // P2
+        { s_size, 0, 0 }, // P3
+        { 0, 0, s_size }, // P4
+        { s_size, 0, s_size }, // P5
+        { s_size, s_size, s_size }, // P6
+        { 0, s_size, s_size } // P7
     };
 
     static constexpr std::uint8_t s_faces[6][4] = {

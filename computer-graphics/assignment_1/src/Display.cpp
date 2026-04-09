@@ -47,14 +47,14 @@ namespace Display {
         glMatrixMode(GL_MODELVIEW);
 
         glLoadIdentity();
-        glTranslatef(-1.0f + Cube::size / 2.0f, -1.0f + Cube::size / 2.0f, -2.5f);
+        glTranslatef(-1.0f + Cube::s_size / 2.0f, -1.0f + Cube::s_size / 2.0f, -2.5f);
 
         for (auto row = 0; row < GameManagement::cubes2dArr.size(); row++) {
             for (auto column = 0; column < GameManagement::cubes2dArr[0].size(); column++) {
                 GameManagement::cubes2dArr[row][column].drawCube(column + (row << 4) + 1);
-                glTranslatef(0.0f, Cube::size * 2.0f, 0.0f);
+                glTranslatef(0.0f, Cube::s_size * 2.0f, 0.0f);
             }
-            glTranslatef(Cube::size * 2.0f, -Cube::size * 2.0f * Config::GRID_SIZE, 0.0f);
+            glTranslatef(Cube::s_size * 2.0f, -Cube::s_size * 2.0f * Config::GRID_SIZE, 0.0f);
         }
 
         if (GameManagement::gameState == GameManagement::GameState::NEW_GAME) {
