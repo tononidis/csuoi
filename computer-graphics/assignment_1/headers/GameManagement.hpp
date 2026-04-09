@@ -22,6 +22,7 @@ namespace GameManagement {
     inline array2d<Cube, Config::GRID_SIZE, Config::GRID_SIZE> cubes2dArr;
     inline GameState gameState = GameState::DEFAULT;
 
+    void destroyCubes(void);
     void createNewGame(void);
 }
 

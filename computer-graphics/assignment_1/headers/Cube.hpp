@@ -42,6 +42,14 @@ struct Cube {
         __INVALID
     };
 
+    static constexpr Type s_selectableTypes[5] = {
+        Type::RED,
+        Type::BLUE,
+        Type::ROCK,
+        Type::PAPER,
+        Type::SCISSOR
+    };
+
     explicit Cube();
 
     Type type;

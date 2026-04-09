@@ -21,7 +21,6 @@ namespace Menu {
             SPDLOG_INFO("Game Started!");
 
             GameManagement::createNewGame();
-            glutPostRedisplay();
         }
 
         else {

@@ -10,12 +10,12 @@ When the user left clicks to show the menu to start a new game, the cubes change
 2 - blue
 3 - rock
 4 - paper
-5 - scissors
+5 - scissor
 
 When 3 of these cubes align either vertically or horizontally they get destroyed and the user get score points.
 
-If the cube is either rock/paper/scissors then the neighboring cubes around the three destroyed cubes are also destroyed based on the rules of the classic hand gestured game of rock-paper-scissors.
+If the cube is either rock/paper/scissor then the neighboring cubes around the three destroyed cubes are also destroyed based on the rules of the classic hand gestured game of rock-paper-scissor.
 
-E.g If the three cubes are textured as rock then the neighboring cubes that are textured as scissors are destroyed as well.
+E.g If the three cubes are textured as rock then the neighboring cubes that are textured as scissor are destroyed as well.
 
 The game ends after 20 moves and the final score is displayed.

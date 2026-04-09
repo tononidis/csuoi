@@ -58,7 +58,6 @@ namespace Mouse {
 
     static void clearClickStatus()
     {
-        SPDLOG_DEBUG("clearClickStatus");
         auto firstCube = s_g_cubeClickedInfo.firstCube.second;
         if (firstCube != nullptr && firstCube->isClicked == true) {
             SPDLOG_TRACE("Changing first cube select status from [true - > false] ...");
@@ -111,9 +110,9 @@ namespace Mouse {
 
     static void secondMouseEventHandler(int button, int state, int x, int y)
     {
-        SPDLOG_DEBUG("Mouse button [{}] clicked, state [{}], (x, y) = [{}, {}]", button, state, x, y);
+        SPDLOG_TRACE("Mouse button [{}] clicked, state [{}], (x, y) = [{}, {}]", button, state, x, y);
 
-        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
             glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &s_g_stencilRead);
             SPDLOG_DEBUG("Stencil read [{}]", s_g_stencilRead);
 
@@ -155,9 +154,9 @@ namespace Mouse {
 
     static void firstMouseEventHandler(int button, int state, int x, int y)
     {
-        SPDLOG_DEBUG("Mouse button [{}] clicked, state [{}], (x, y) = [{}, {}]", button, state, x, y);
+        SPDLOG_TRACE("Mouse button [{}] clicked, state [{}], (x, y) = [{}, {}]", button, state, x, y);
 
-        if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+        if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
             glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_BYTE, &s_g_stencilRead);
             SPDLOG_DEBUG("Stencil read [{}]", s_g_stencilRead);
 

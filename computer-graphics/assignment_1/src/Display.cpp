@@ -11,41 +11,6 @@ namespace BraXaPsaIII {
 
 namespace Display {
 
-    static void destroyCubes()
-    {
-        for (auto row = 0; row < GameManagement::cubes2dArr.size(); row++) {
-            for (auto column = 0; column < GameManagement::cubes2dArr[0].size(); column++) {
-                if (row < GameManagement::cubes2dArr.size() - 2) {
-                    auto firstRowState = GameManagement::cubes2dArr[row][column].type;
-                    auto secondRowState = GameManagement::cubes2dArr[row + 1][column].type;
-                    auto thirdRowState = GameManagement::cubes2dArr[row + 2][column].type;
-
-                    if (firstRowState == secondRowState && secondRowState == thirdRowState && firstRowState != Cube::Type::EMPTY) {
-                        GameManagement::cubes2dArr[row][column].type = Cube::Type::EMPTY;
-                        GameManagement::cubes2dArr[row + 1][column].type = Cube::Type::EMPTY;
-                        GameManagement::cubes2dArr[row + 2][column].type = Cube::Type::EMPTY;
-
-                        glutPostRedisplay();
-                    }
-                }
-
-                if (column < GameManagement::cubes2dArr[0].size() - 2) {
-                    auto firstColumnState = GameManagement::cubes2dArr[row][column].type;
-                    auto secondColumnState = GameManagement::cubes2dArr[row][column + 1].type;
-                    auto thirdColumnState = GameManagement::cubes2dArr[row][column + 2].type;
-
-                    if (firstColumnState == secondColumnState && secondColumnState == thirdColumnState && firstColumnState != Cube::Type::EMPTY) {
-                        GameManagement::cubes2dArr[row][column].type = Cube::Type::EMPTY;
-                        GameManagement::cubes2dArr[row][column + 1].type = Cube::Type::EMPTY;
-                        GameManagement::cubes2dArr[row][column + 2].type = Cube::Type::EMPTY;
-
-                        glutPostRedisplay();
-                    }
-                }
-            }
-        }
-    }
-
     static void displayScore(void)
     {
         glMatrixMode(GL_PROJECTION);
@@ -59,12 +24,12 @@ namespace Display {
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glRasterPos2i(300, 550);
 
-        char displayScoreMsg[100];
-        snprintf(displayScoreMsg, sizeof(displayScoreMsg), "Your score is: %d", GameManagement::score);
+        std::string scoreMsg = "Your score is: " + std::to_string(GameManagement::score);
 
-        for (auto i = 0; i < strlen(displayScoreMsg); i++) {
-            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, displayScoreMsg[i]);
+        for (const auto& c : scoreMsg) {
+            glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, c);
         }
+
         glMatrixMode(GL_PROJECTION);
 
         glPopMatrix();
@@ -93,7 +58,7 @@ namespace Display {
         }
 
         if (GameManagement::gameState == GameManagement::GameState::NEW_GAME) {
-            destroyCubes();
+            GameManagement::destroyCubes();
         }
 
         glutSwapBuffers();
