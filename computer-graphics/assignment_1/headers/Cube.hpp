@@ -42,6 +42,28 @@ struct Cube {
         __INVALID
     };
 
+    static auto constexpr type_to_string(Type t)
+    {
+        switch (t) {
+        case Type::INITAL:
+            return "INITAL";
+        case Type::RED:
+            return "RED";
+        case Type::BLUE:
+            return "BLUE";
+        case Type::ROCK:
+            return "ROCK";
+        case Type::PAPER:
+            return "PAPER";
+        case Type::SCISSOR:
+            return "SCISSOR";
+        case Type::EMPTY:
+            return "EMPTY";
+        default:
+            return "__INVALID";
+        }
+    }
+
     static constexpr Type s_selectableTypes[5] = {
         Type::RED,
         Type::BLUE,
@@ -55,7 +77,7 @@ struct Cube {
     Type type;
     bool isClicked;
 
-    void drawCube(const std::uint8_t&& cubeStencilId);
+    void drawCube(const std::uint8_t cubeStencilId);
 };
 
 }

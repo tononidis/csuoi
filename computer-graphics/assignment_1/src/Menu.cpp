@@ -18,9 +18,10 @@ namespace Menu {
 
         else if (static_cast<GameManagement::GameState>(value) == GameManagement::GameState::NEW_GAME) {
             GameManagement::gameState = GameManagement::GameState::NEW_GAME;
-            SPDLOG_INFO("Game Started!");
 
+            SPDLOG_DEBUG("Stating the game ...");
             GameManagement::createNewGame();
+            SPDLOG_INFO("Game Started!");
         }
 
         else {

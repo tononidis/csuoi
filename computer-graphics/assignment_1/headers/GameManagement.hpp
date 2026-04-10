@@ -2,6 +2,7 @@
 
 #include "Config.hpp"
 #include "Cube.hpp"
+#include "Utils.hpp"
 
 #include <cstdint>
 
@@ -22,8 +23,9 @@ namespace GameManagement {
     inline array2d<Cube, Config::GRID_SIZE, Config::GRID_SIZE> cubes2dArr;
     inline GameState gameState = GameState::DEFAULT;
 
-    void destroyCubes(void);
     void createNewGame(void);
+    void checkPointAndDestroyCubes(const Utils::Point& point);
+
 }
 
-};
+}

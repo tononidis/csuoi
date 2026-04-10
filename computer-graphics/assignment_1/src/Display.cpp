@@ -57,10 +57,6 @@ namespace Display {
             glTranslatef(Cube::s_size * 2.0f, -Cube::s_size * 2.0f * Config::GRID_SIZE, 0.0f);
         }
 
-        if (GameManagement::gameState == GameManagement::GameState::NEW_GAME) {
-            GameManagement::destroyCubes();
-        }
-
         glutSwapBuffers();
     }
 
