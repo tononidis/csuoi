@@ -21,7 +21,7 @@ namespace GameManagement {
         }
     };
 
-    static auto generateRandomSelectableType()
+    Cube::Type generateRandomSelectableType()
     {
         static std::mt19937 s_generator(std::random_device { }());
         static std::uniform_int_distribution<std::size_t> s_distribution(0, std::size(Cube::s_selectableTypes) - 1);
@@ -29,7 +29,7 @@ namespace GameManagement {
         return Cube::s_selectableTypes[s_distribution(s_generator)];
     }
 
-    static auto generateRandomSelectableTypeExclude(Cube::Type excludedType)
+    Cube::Type generateRandomSelectableTypeExclude(Cube::Type excludedType)
     {
         auto type = generateRandomSelectableType();
         while (type == excludedType) {
@@ -39,29 +39,7 @@ namespace GameManagement {
         return type;
     }
 
-    static void dropCubesToEmptySlots(const std::vector<Point>& pointsVec)
-    {
-        for (const auto& point : pointsVec) {
-            SPDLOG_DEBUG("Attempting to lift cube (x, y) = [{}, {}] ...", point.x, point.y);
-
-            auto cubeYPoint = point.y;
-            auto upCubeYPoint = point.y + 1;
-
-            while (upCubeYPoint <= cubes2dArr[0].size() - 1) {
-                SPDLOG_DEBUG("Lifting cube (x, y) = [{}, {}] to (x, y) = [{}, {}]", point.x, cubeYPoint, point.x, upCubeYPoint);
-
-                auto& cube = cubes2dArr[point.x][cubeYPoint];
-                auto& upCube = cubes2dArr[point.x][upCubeYPoint];
-
-                std::swap(cube.type, upCube.type);
-
-                cubeYPoint += 1;
-                upCubeYPoint += 1;
-            }
-        }
-    }
-
-    static bool getDestructibleCubePoints(std::vector<Point>& destructiblePoints_out)
+    bool getDestructibleCubePoints(std::vector<Point>& destructiblePoints_out)
     {
         destructiblePoints_out.clear();
 
@@ -157,24 +135,6 @@ namespace GameManagement {
 
         else {
             return false;
-        }
-    }
-
-    void destroyCubes(void)
-    {
-        std::vector<Point> destructiblePoints;
-        bool destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
-
-        while (destructibleCubePointsExist == true) {
-            for (const auto& point : destructiblePoints) {
-                cubes2dArr[point.x][point.y].type = generateRandomSelectableType();
-                SPDLOG_DEBUG("Destroyed cube at (x, y) = [{}, {}]", point.x, point.y);
-            }
-
-            dropCubesToEmptySlots(destructiblePoints);
-            destructiblePoints.clear();
-
-            destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
         }
     }
 

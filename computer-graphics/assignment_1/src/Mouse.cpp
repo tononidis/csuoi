@@ -1,5 +1,6 @@
 #include "Mouse.hpp"
 #include "Cube.hpp"
+#include "Effects.hpp"
 #include "GameManagement.hpp"
 #include "Point.hpp"
 
@@ -92,7 +93,7 @@ namespace Mouse {
 
             else {
                 std::swap(firstCubeSelection->type, secondCubeSelection->type);
-                GameManagement::destroyCubes();
+                Effects::destroyCubes();
                 GameManagement::count++;
             }
         }

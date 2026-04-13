@@ -14,7 +14,7 @@ namespace Config {
     inline constexpr auto WINDOW_START_POS_X = 100;
     inline constexpr auto WINDOW_START_POS_Y = 100;
     inline constexpr auto WINDOW_NAME = "BraXaPsaIII";
-};
+}
 
 static_assert(Config::GRID_SIZE > 10, "Grid size must be larger than 10");
 
