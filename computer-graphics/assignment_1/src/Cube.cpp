@@ -1,8 +1,6 @@
 #include "Cube.hpp"
 #include "TexturesInfo.hpp"
 
-#include <GL/gl.h>
-
 namespace BraXaPsaIII {
 
 Cube::Cube()

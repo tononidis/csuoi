@@ -1,7 +1,7 @@
 #include "Mouse.hpp"
 #include "Cube.hpp"
 #include "GameManagement.hpp"
-#include "Utils.hpp"
+#include "Point.hpp"
 
 #include <GL/glut.h>
 
@@ -18,8 +18,8 @@ namespace Mouse {
     static void secondMouseEventHandler(int button, int state, int x, int y);
 
     struct CubeClickedInfo {
-        std::pair<Utils::Point, Cube*> firstCubeSelection;
-        std::pair<Utils::Point, Cube*> secondCubeSelection;
+        std::pair<Point, Cube*> firstCubeSelection;
+        std::pair<Point, Cube*> secondCubeSelection;
 
         CubeClickedInfo()
             : firstCubeSelection({ { -1, -1 }, nullptr })
@@ -62,7 +62,7 @@ namespace Mouse {
         }
     }
 
-    static bool arePointsNeighbor(const Utils::Point& pointA, const Utils::Point& pointB)
+    static bool arePointsNeighbor(const Point& pointA, const Point& pointB)
     {
         auto dx = std::abs(pointA.x - pointB.x);
         auto dy = std::abs(pointA.y - pointB.y);
@@ -92,8 +92,7 @@ namespace Mouse {
 
             else {
                 std::swap(firstCubeSelection->type, secondCubeSelection->type);
-                GameManagement::checkPointAndDestroyCubes(firstPointSelection);
-                GameManagement::checkPointAndDestroyCubes(secondPointSelection);
+                GameManagement::destroyCubes();
                 GameManagement::count++;
             }
         }

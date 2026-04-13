@@ -2,7 +2,7 @@
 
 #include "Config.hpp"
 #include "Cube.hpp"
-#include "Utils.hpp"
+#include "Point.hpp"
 
 #include <cstdint>
 
@@ -24,7 +24,7 @@ namespace GameManagement {
     inline GameState gameState = GameState::DEFAULT;
 
     void createNewGame(void);
-    void checkPointAndDestroyCubes(const Utils::Point& point);
+    void destroyCubes(void);
 
 }
 

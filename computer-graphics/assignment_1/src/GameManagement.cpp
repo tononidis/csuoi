@@ -4,24 +4,51 @@
 
 #include <spdlog/spdlog.h>
 
-#include <cstdlib>
+#include <random>
 
 namespace BraXaPsaIII {
 
 namespace GameManagement {
 
-    using cubePointPair = std::pair<Utils::Point, Cube&>;
+    struct CubeRefPointPair {
+        Point point;
+        Cube& cube;
 
-    static void dropCubesToEmptySlot(const std::vector<Utils::Point>& pointsVec)
+        CubeRefPointPair(decltype(Point::x) x, decltype(Point::y) y)
+            : point(x, y)
+            , cube(cubes2dArr[x][y])
+        {
+        }
+    };
+
+    static auto generateRandomSelectableType()
+    {
+        static std::mt19937 s_generator(std::random_device { }());
+        static std::uniform_int_distribution<std::size_t> s_distribution(0, std::size(Cube::s_selectableTypes) - 1);
+
+        return Cube::s_selectableTypes[s_distribution(s_generator)];
+    }
+
+    static auto generateRandomSelectableTypeExclude(Cube::Type excludedType)
+    {
+        auto type = generateRandomSelectableType();
+        while (type == excludedType) {
+            type = generateRandomSelectableType();
+        }
+
+        return type;
+    }
+
+    static void dropCubesToEmptySlots(const std::vector<Point>& pointsVec)
     {
         for (const auto& point : pointsVec) {
-            SPDLOG_TRACE("Attempting to lift cube (x, y) = [{}, {}] ...", point.x, point.y);
+            SPDLOG_DEBUG("Attempting to lift cube (x, y) = [{}, {}] ...", point.x, point.y);
 
             auto cubeYPoint = point.y;
             auto upCubeYPoint = point.y + 1;
 
             while (upCubeYPoint <= cubes2dArr[0].size() - 1) {
-                SPDLOG_TRACE("Lifting cube (x, y) = [{}, {}] to (x, y) = [{}, {}]", point.x, cubeYPoint, point.x, upCubeYPoint);
+                SPDLOG_DEBUG("Lifting cube (x, y) = [{}, {}] to (x, y) = [{}, {}]", point.x, cubeYPoint, point.x, upCubeYPoint);
 
                 auto& cube = cubes2dArr[point.x][cubeYPoint];
                 auto& upCube = cubes2dArr[point.x][upCubeYPoint];
@@ -34,220 +61,149 @@ namespace GameManagement {
         }
     }
 
-    static void checkAndDestroyCubes(cubePointPair& cubeA, cubePointPair& cubeB, cubePointPair cubeC)
+    static bool getDestructibleCubePoints(std::vector<Point>& destructiblePoints_out)
     {
-        if (cubeA.second.type == cubeB.second.type && cubeA.second.type == cubeC.second.type && cubeA.second.type != Cube::Type::EMPTY) {
+        destructiblePoints_out.clear();
 
-            cubeA.second.type = Cube::Type::EMPTY;
-            cubeB.second.type = Cube::Type::EMPTY;
-            cubeC.second.type = Cube::Type::EMPTY;
+        for (auto row = 0; row < cubes2dArr.size(); row++) {
+            for (auto column = 0; column < cubes2dArr[0].size(); column++) {
 
-            std::vector<Utils::Point> pointsVec { cubeA.first, cubeB.first, cubeC.first };
+                auto& cube = cubes2dArr[row][column];
+                auto type = cube.type;
+                if (type == Cube::Type::EMPTY) {
+                    SPDLOG_DEBUG("Cube at (x, y) = [{}, {}] is already empty", row, column);
+                    continue;
+                }
 
-            std::sort(pointsVec.begin(), pointsVec.end(), [](const Utils::Point& a, const Utils::Point& b) {
-                return a.y > b.y;
-            });
+                std::vector<Point> horizontalDestructiblePoints = { { row, column } };
+                std::vector<Point> verticalDestructiblePoints = { { row, column } };
 
-            dropCubesToEmptySlot(pointsVec);
-        }
-    }
+                if (row != cubes2dArr[0].size() - 1) {
+                    auto rightCubeXPoint = row + 1;
+                    while (rightCubeXPoint < cubes2dArr[0].size()) {
+                        auto& rightCube = cubes2dArr[rightCubeXPoint][column];
+                        if (rightCube.type == type) {
+                            horizontalDestructiblePoints.emplace_back(rightCubeXPoint, column);
+                            rightCubeXPoint++;
+                        }
 
-    void checkPointAndDestroyCubes(const Utils::Point& point)
-    {
-        cubePointPair cube({ point.x, point.y }, GameManagement::cubes2dArr[point.x][point.y]);
-        if (point.x == 0) {
-            cubePointPair rightCube({ point.x + 1, point.y }, GameManagement::cubes2dArr[point.x + 1][point.y]);
-            cubePointPair right2Cube({ point.x + 2, point.y }, GameManagement::cubes2dArr[point.x + 2][point.y]);
+                        else {
+                            break;
+                        }
+                    }
+                }
 
-            checkAndDestroyCubes(cube, rightCube, right2Cube);
-        }
+                if (row != 0) {
+                    auto leftCubeXPoint = row - 1;
+                    while (leftCubeXPoint >= 0) {
+                        auto& leftCube = cubes2dArr[leftCubeXPoint][column];
+                        if (leftCube.type == type) {
+                            horizontalDestructiblePoints.emplace_back(leftCubeXPoint, column);
+                            leftCubeXPoint--;
+                        }
 
-        else if (point.x == 1) {
-            cubePointPair leftCube({ point.x - 1, point.y }, GameManagement::cubes2dArr[point.x - 1][point.y]);
-            cubePointPair rightCube({ point.x + 1, point.y }, GameManagement::cubes2dArr[point.x + 1][point.y]);
-            cubePointPair right2Cube({ point.x + 2, point.y }, GameManagement::cubes2dArr[point.x + 2][point.y]);
+                        else {
+                            break;
+                        }
+                    }
+                }
 
-            checkAndDestroyCubes(cube, rightCube, right2Cube);
-            checkAndDestroyCubes(leftCube, cube, rightCube);
-        }
+                if (column != cubes2dArr.size() - 1) {
+                    auto upCubeYPoint = column + 1;
+                    while (upCubeYPoint < cubes2dArr[0].size()) {
+                        auto& rightCube = cubes2dArr[row][upCubeYPoint];
+                        if (rightCube.type == type) {
+                            verticalDestructiblePoints.emplace_back(row, upCubeYPoint);
+                            upCubeYPoint++;
+                        }
 
-        else if (point.x == GameManagement::cubes2dArr.size() - 1) {
-            cubePointPair leftCube({ point.x - 1, point.y }, GameManagement::cubes2dArr[point.x - 1][point.y]);
-            cubePointPair left2Cube({ point.x - 2, point.y }, GameManagement::cubes2dArr[point.x - 2][point.y]);
+                        else {
+                            break;
+                        }
+                    }
+                }
 
-            checkAndDestroyCubes(left2Cube, leftCube, cube);
-        }
+                if (column != 0) {
+                    auto downCubeYPoint = column - 1;
+                    while (downCubeYPoint >= 0) {
+                        auto& rightCube = cubes2dArr[row][downCubeYPoint];
+                        if (rightCube.type == type) {
+                            verticalDestructiblePoints.emplace_back(row, downCubeYPoint);
+                            downCubeYPoint--;
+                        }
 
-        else if (point.x == GameManagement::cubes2dArr.size() - 2) {
-            cubePointPair rightCube({ point.x + 1, point.y }, GameManagement::cubes2dArr[point.x + 1][point.y]);
-            cubePointPair leftCube({ point.x - 1, point.y }, GameManagement::cubes2dArr[point.x - 1][point.y]);
-            cubePointPair left2Cube({ point.x - 2, point.y }, GameManagement::cubes2dArr[point.x - 2][point.y]);
+                        else {
+                            break;
+                        }
+                    }
+                }
 
-            checkAndDestroyCubes(left2Cube, leftCube, cube);
-            checkAndDestroyCubes(leftCube, cube, rightCube);
-        }
+                if (horizontalDestructiblePoints.size() >= 3) {
+                    destructiblePoints_out.insert(destructiblePoints_out.end(), horizontalDestructiblePoints.begin(), horizontalDestructiblePoints.end());
+                }
 
-        else {
-            cubePointPair rightCube({ point.x + 1, point.y }, GameManagement::cubes2dArr[point.x + 1][point.y]);
-            cubePointPair right2Cube({ point.x + 2, point.y }, GameManagement::cubes2dArr[point.x + 2][point.y]);
-            cubePointPair leftCube({ point.x - 1, point.y }, GameManagement::cubes2dArr[point.x - 1][point.y]);
-            cubePointPair left2Cube({ point.x - 2, point.y }, GameManagement::cubes2dArr[point.x - 2][point.y]);
-
-            checkAndDestroyCubes(cube, rightCube, right2Cube);
-            checkAndDestroyCubes(leftCube, cube, rightCube);
-            checkAndDestroyCubes(left2Cube, leftCube, cube);
-        }
-
-        if (point.y == 0) {
-            cubePointPair upCube({ point.x, point.y + 1 }, GameManagement::cubes2dArr[point.x][point.y + 1]);
-            cubePointPair up2Cube({ point.x, point.y + 2 }, GameManagement::cubes2dArr[point.x][point.y + 2]);
-
-            checkAndDestroyCubes(cube, upCube, up2Cube);
-        }
-
-        else if (point.y == 1) {
-            cubePointPair downCube({ point.x, point.y - 1 }, GameManagement::cubes2dArr[point.x][point.y - 1]);
-            cubePointPair upCube({ point.x, point.y + 1 }, GameManagement::cubes2dArr[point.x][point.y + 1]);
-            cubePointPair up2Cube({ point.x, point.y + 2 }, GameManagement::cubes2dArr[point.x][point.y + 2]);
-
-            checkAndDestroyCubes(cube, upCube, up2Cube);
-            checkAndDestroyCubes(downCube, cube, upCube);
-        }
-
-        else if (point.y == GameManagement::cubes2dArr[0].size() - 1) {
-            cubePointPair downCube({ point.x, point.y - 1 }, GameManagement::cubes2dArr[point.x][point.y - 1]);
-            cubePointPair down2Cube({ point.x, point.y - 2 }, GameManagement::cubes2dArr[point.x][point.y - 2]);
-
-            checkAndDestroyCubes(down2Cube, downCube, cube);
-        }
-
-        else if (point.y == GameManagement::cubes2dArr[0].size() - 2) {
-            cubePointPair upCube({ point.x, point.y + 1 }, GameManagement::cubes2dArr[point.x][point.y + 1]);
-            cubePointPair downCube({ point.x, point.y - 1 }, GameManagement::cubes2dArr[point.x][point.y - 1]);
-            cubePointPair down2Cube({ point.x, point.y - 2 }, GameManagement::cubes2dArr[point.x][point.y - 2]);
-
-            checkAndDestroyCubes(down2Cube, downCube, cube);
-            checkAndDestroyCubes(downCube, cube, upCube);
+                if (verticalDestructiblePoints.size() >= 3) {
+                    destructiblePoints_out.insert(destructiblePoints_out.end(), verticalDestructiblePoints.begin(), verticalDestructiblePoints.end());
+                }
+            }
         }
 
-        else {
-            cubePointPair upCube({ point.x, point.y + 1 }, GameManagement::cubes2dArr[point.x][point.y + 1]);
-            cubePointPair up2Cube({ point.x, point.y + 2 }, GameManagement::cubes2dArr[point.x][point.y + 2]);
-            cubePointPair downCube({ point.x, point.y - 1 }, GameManagement::cubes2dArr[point.x][point.y - 1]);
-            cubePointPair down2Cube({ point.x, point.y - 2 }, GameManagement::cubes2dArr[point.x][point.y - 2]);
-
-            checkAndDestroyCubes(cube, upCube, up2Cube);
-            checkAndDestroyCubes(downCube, cube, upCube);
-            checkAndDestroyCubes(down2Cube, downCube, cube);
-        }
-    }
-
-    static bool createUniqueCubeTriplet(Cube& cubeUp, Cube& cubeLeft, Cube& cube, Cube& cubeDown, Cube& cubeRight)
-    {
-
-        bool changedTriplet = false;
-        if (cube.type == cubeUp.type && cube.type == cubeDown.type) {
-            auto newTypeIndex = (static_cast<std::uint32_t>(cube.type) % std::size(Cube::s_selectableTypes)) + 1;
-            cube.type = static_cast<Cube::Type>(newTypeIndex);
-
-            changedTriplet = true;
-        }
-
-        if (cube.type == cubeLeft.type && cube.type == cubeRight.type) {
-            auto newTypeIndex = (static_cast<std::uint32_t>(cube.type) % std::size(Cube::s_selectableTypes)) + 1;
-            cube.type = static_cast<Cube::Type>(newTypeIndex);
-
-            changedTriplet = true;
-        }
-
-        return changedTriplet;
-    }
-
-    static bool createUniqueCubeTripletAtEdges(Cube& cubeLeftOrUp, Cube& cube, Cube& cubeRightOrDown)
-    {
-        if (cube.type == cubeLeftOrUp.type && cube.type == cubeRightOrDown.type) {
-            auto newTypeIndex = (static_cast<std::uint32_t>(cube.type) % std::size(Cube::s_selectableTypes)) + 1;
-            cube.type = static_cast<Cube::Type>(newTypeIndex);
+        if (destructiblePoints_out.size() >= 3) {
+            std::sort(destructiblePoints_out.begin(), destructiblePoints_out.end());
+            destructiblePoints_out.erase(std::unique(destructiblePoints_out.begin(), destructiblePoints_out.end()), destructiblePoints_out.end());
 
             return true;
         }
 
-        return false;
+        else {
+            return false;
+        }
+    }
+
+    void destroyCubes(void)
+    {
+        std::vector<Point> destructiblePoints;
+        bool destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
+
+        while (destructibleCubePointsExist == true) {
+            for (const auto& point : destructiblePoints) {
+                cubes2dArr[point.x][point.y].type = generateRandomSelectableType();
+                SPDLOG_DEBUG("Destroyed cube at (x, y) = [{}, {}]", point.x, point.y);
+            }
+
+            dropCubesToEmptySlots(destructiblePoints);
+            destructiblePoints.clear();
+
+            destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
+        }
+    }
+
+    static void replaceEmptyCubes(void)
+    {
+        std::vector<Point> destructiblePoints;
+
+        bool destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
+        while (destructibleCubePointsExist == true) {
+            for (const auto& point : destructiblePoints) {
+                cubes2dArr[point.x][point.y].type = generateRandomSelectableTypeExclude(cubes2dArr[point.x][point.y].type);
+            }
+
+            destructibleCubePointsExist = getDestructibleCubePoints(destructiblePoints);
+        }
     }
 
     void createNewGame(void)
     {
-        int randomNum = -1;
-
         for (auto row = 0; row < cubes2dArr.size(); row++) {
             for (auto column = 0; column < cubes2dArr[0].size(); column++) {
-                randomNum = std::rand() % std::size(Cube::s_selectableTypes);
-                cubes2dArr[row][column].type = Cube::s_selectableTypes[randomNum];
+                cubes2dArr[row][column].type = generateRandomSelectableType();
 
                 SPDLOG_TRACE("First pass assigning cube (x, y) = [{}, {}] with type = [{}]", row, column, Cube::type_to_string(cubes2dArr[row][column].type));
             }
         }
 
-        for (auto column = 1; column < cubes2dArr[0].size() - 1; column++) {
-            auto& cube = cubes2dArr[0][column];
-            auto& leftCube = cubes2dArr[0][column - 1];
-            auto& rightCube = cubes2dArr[0][column + 1];
-
-            if (createUniqueCubeTripletAtEdges(leftCube, cube, rightCube) == true) {
-                SPDLOG_TRACE("Edge pass re-assigning cube (x, y) = [{}, {}] with type = [{}]", 0, column, Cube::type_to_string(cube->type));
-            }
-
-            cube = cubes2dArr[cubes2dArr.size() - 1][column];
-            leftCube = cubes2dArr[cubes2dArr.size() - 1][column - 1];
-            rightCube = cubes2dArr[cubes2dArr.size() - 1][column + 1];
-
-            if (createUniqueCubeTripletAtEdges(leftCube, cube, rightCube) == true) {
-                SPDLOG_TRACE("Edge pass re-assigning cube (x, y) = [{}, {}] with type = [{}]", cubes2dArr.size() - 1, column, Cube::type_to_string(cube->type));
-            }
-        }
-
-        for (auto row = 1; row < cubes2dArr.size() - 1; row++) {
-            auto& cube = cubes2dArr[row][0];
-            auto& downCube = cubes2dArr[row - 1][0];
-            auto& upCube = cubes2dArr[row + 1][0];
-
-            if (createUniqueCubeTripletAtEdges(downCube, cube, upCube) == true) {
-                SPDLOG_TRACE("Edge pass re-assigning cube (x, y) = [{}, {}] with type = [{}]", row, 0, Cube::type_to_string(cube->type));
-            }
-
-            cube = cubes2dArr[row][cubes2dArr[0].size() - 1];
-            downCube = cubes2dArr[row - 1][cubes2dArr[0].size() - 1];
-            upCube = cubes2dArr[row + 1][cubes2dArr[0].size() - 1];
-
-            if (createUniqueCubeTripletAtEdges(downCube, cube, upCube) == true) {
-                SPDLOG_TRACE("Edge pass re-assigning cube (x, y) = [{}, {}] with type = [{}]", row, cubes2dArr[0].size() - 1, Cube::type_to_string(cube->type));
-            }
-        }
-
-        std::uint8_t numOfChangedTriplets = 0;
-        do {
-            numOfChangedTriplets = 0;
-            for (auto row = 1; row < cubes2dArr.size() - 1; row++) {
-                for (auto column = 1; column < cubes2dArr[0].size() - 1; column++) {
-                    auto& cube = cubes2dArr[row][column];
-                    auto& upCube = cubes2dArr[row + 1][column];
-                    auto& leftCube = cubes2dArr[row][column - 1];
-                    auto& downCube = cubes2dArr[row - 1][column];
-                    auto& rightCube = cubes2dArr[row][column + 1];
-
-                    bool res = static_cast<decltype(numOfChangedTriplets)>(createUniqueCubeTriplet(upCube, leftCube, cube, downCube, rightCube));
-
-                    if (res == true) {
-                        SPDLOG_TRACE("Inner pass re-assigning cube (x, y) = [{}, {}] with type = [{}]", row, column, Cube::type_to_string(cube->type));
-                    }
-
-                    numOfChangedTriplets += res;
-                }
-            }
-        } while (numOfChangedTriplets != 0);
-
+        replaceEmptyCubes();
         glutPostRedisplay();
     }
 }
-
 }
