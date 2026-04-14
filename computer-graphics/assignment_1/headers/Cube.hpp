@@ -64,6 +64,34 @@ struct Cube {
         }
     }
 
+    static auto constexpr type_to_beat_type(Type t)
+    {
+        switch (t) {
+        case Type::ROCK:
+            return Type::PAPER;
+        case Type::PAPER:
+            return Type::SCISSOR;
+        case Type::SCISSOR:
+            return Type::ROCK;
+        default:
+            return Type::__INVALID;
+        }
+    }
+
+    static auto constexpr type_to_beaten_type(Type t)
+    {
+        switch (t) {
+        case Type::ROCK:
+            return Type::SCISSOR;
+        case Type::PAPER:
+            return Type::ROCK;
+        case Type::SCISSOR:
+            return Type::PAPER;
+        default:
+            return Type::__INVALID;
+        }
+    }
+
     static constexpr Type s_selectableTypes[5] = {
         Type::RED,
         Type::BLUE,

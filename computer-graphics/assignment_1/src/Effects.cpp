@@ -33,10 +33,11 @@ namespace Effects {
         }
     }
 
-    static void continueDestroyingCubes(int x)
+    static void doBoardSoftRest(int x)
     {
-        SPDLOG_DEBUG("Continuing with cube destruction ...");
-        destroyCubes();
+        SPDLOG_DEBUG("Softly reseting the board ...");
+        GameManagement::replaceEmptyCubesWithOutScoring();
+        glutPostRedisplay();
     }
 
     static void destroyCubesEffect(int x)
@@ -47,14 +48,12 @@ namespace Effects {
         }
 
         dropCubesToEmptySlots(s_g_destructiblePoints);
-        glutPostRedisplay();
-
-        glutTimerFunc(2000, continueDestroyingCubes, 0);
+        glutTimerFunc(1, doBoardSoftRest, 0);
     }
 
     void destroyCubes(void)
     {
-        bool destructibleCubePointsExist = GameManagement::getDestructibleCubePoints(s_g_destructiblePoints);
+        bool destructibleCubePointsExist = GameManagement::getDestructibleCubePoints(s_g_destructiblePoints, false);
 
         if (destructibleCubePointsExist == true) {
             for (const auto& point : s_g_destructiblePoints) {

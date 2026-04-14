@@ -23,23 +23,9 @@ namespace Mouse {
         std::pair<Point, Cube*> secondCubeSelection;
 
         CubeClickedInfo()
-            : firstCubeSelection({ { -1, -1 }, nullptr })
-            , secondCubeSelection({ { -1, -1 }, nullptr })
+            : firstCubeSelection({ Point { -1, -1 }, nullptr })
+            , secondCubeSelection({ Point { -1, -1 }, nullptr })
         {
-        }
-
-        void reset()
-        {
-            if (firstCubeSelection.second != nullptr) {
-                firstCubeSelection.second->isClicked = false;
-            }
-
-            if (secondCubeSelection.second != nullptr) {
-                secondCubeSelection.second->isClicked = false;
-            }
-
-            firstCubeSelection = { { -1, -1 }, nullptr };
-            secondCubeSelection = { { -1, -1 }, nullptr };
         }
     };
 
@@ -128,7 +114,7 @@ namespace Mouse {
                     return;
                 }
 
-                s_g_cubeClickedInfo.secondCubeSelection.first = { x, y };
+                s_g_cubeClickedInfo.secondCubeSelection.first = Point { x, y };
                 s_g_cubeClickedInfo.secondCubeSelection.second = &GameManagement::cubes2dArr[x][y];
                 s_g_cubeClickedInfo.secondCubeSelection.second->isClicked = true;
 
@@ -172,7 +158,7 @@ namespace Mouse {
                     return;
                 }
 
-                s_g_cubeClickedInfo.firstCubeSelection.first = { x, y };
+                s_g_cubeClickedInfo.firstCubeSelection.first = Point { x, y };
                 s_g_cubeClickedInfo.firstCubeSelection.second = &GameManagement::cubes2dArr[x][y];
                 s_g_cubeClickedInfo.firstCubeSelection.second->isClicked = true;
 

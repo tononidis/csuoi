@@ -26,6 +26,7 @@ add_executable(
     "src/WindowUtils.cpp"
     "src/TexturesInfo.cpp"
     "src/Cube.cpp"
+    "src/Point.cpp"
     "src/Display.cpp"
     "src/Effects.cpp"
     "src/GameManagement.cpp"

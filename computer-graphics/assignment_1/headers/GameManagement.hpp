@@ -26,7 +26,8 @@ namespace GameManagement {
 
     Cube::Type generateRandomSelectableType();
     Cube::Type generateRandomSelectableTypeExclude(Cube::Type excludedType);
-    bool getDestructibleCubePoints(std::vector<Point>& destructiblePoints_out);
+    bool getDestructibleCubePoints(std::vector<Point>& destructiblePoints_out, bool isUsedForReplacement);
+    void replaceEmptyCubesWithOutScoring(void);
     void createNewGame(void);
 
 }
