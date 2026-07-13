@@ -1,15 +1,12 @@
 #include "Point.hpp"
+
 #include "Config.hpp"
 
 #include <cassert>
 
 namespace BraXaPsaIII {
 
-Point::Point(int x_in, int y_in)
-    : x(x_in)
-    , y(y_in)
-{
-}
+Point::Point(int x_in, int y_in) : x(x_in), y(y_in) {}
 
 bool Point::isValid() const
 {
@@ -19,52 +16,52 @@ bool Point::isValid() const
 Point Point::right(int step) const
 {
     assert(step >= 1);
-    return Point { x + step, y };
+    return Point{x + step, y};
 }
 
 Point Point::left(int step) const
 {
     assert(step >= 1);
-    return Point { x - step, y };
+    return Point{x - step, y};
 }
 
 Point Point::up(int step) const
 {
     assert(step >= 1);
-    return Point { x, y + step };
+    return Point{x, y + step};
 }
 
 Point Point::down(int step) const
 {
     assert(step >= 1);
-    return Point { x, y - step };
+    return Point{x, y - step};
 }
 
 Point Point::upRight(int step) const
 {
     assert(step >= 1);
-    return Point { x + step, y + step };
+    return Point{x + step, y + step};
 }
 
 Point Point::upLeft(int step) const
 {
     assert(step >= 1);
-    return Point { x - step, y + step };
+    return Point{x - step, y + step};
 }
 
 Point Point::downRight(int step) const
 {
     assert(step >= 1);
-    return Point { x + step, y - step };
+    return Point{x + step, y - step};
 }
 
 Point Point::downLeft(int step) const
 {
     assert(step >= 1);
-    return Point { x - step, y - step };
+    return Point{x - step, y - step};
 }
 
-bool Point::operator<(const Point& other) const
+bool Point::operator<(const Point &other) const
 {
     assert(other.isValid() == true);
     if (y != other.y) {
@@ -73,10 +70,10 @@ bool Point::operator<(const Point& other) const
     return x < other.x;
 }
 
-bool Point::operator==(const Point& other) const
+bool Point::operator==(const Point &other) const
 {
     assert(other.isValid() == true);
     return x == other.x && y == other.y;
 }
 
-}
+} // namespace BraXaPsaIII

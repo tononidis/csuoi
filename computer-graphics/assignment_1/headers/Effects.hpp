@@ -8,8 +8,8 @@ namespace BraXaPsaIII {
 
 namespace Effects {
 
-    void destroyCubes(void);
+void destroyCubes(void);
 
 }
 
-}
+} // namespace BraXaPsaIII

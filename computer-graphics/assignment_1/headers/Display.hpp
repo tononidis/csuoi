@@ -3,7 +3,9 @@
 namespace BraXaPsaIII {
 
 namespace Display {
-    void registerDisplay();
-}
+
+void registerDisplay();
 
 }
+
+} // namespace BraXaPsaIII

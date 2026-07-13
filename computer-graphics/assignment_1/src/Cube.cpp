@@ -1,13 +1,10 @@
 #include "Cube.hpp"
+
 #include "TexturesInfo.hpp"
 
 namespace BraXaPsaIII {
 
-Cube::Cube()
-    : type(Type::INITAL)
-    , isClicked(false)
-{
-}
+Cube::Cube() : type(Type::INITAL), isClicked(false) {}
 
 void Cube::drawCube(const std::uint8_t cubeStencilId)
 {
@@ -75,12 +72,7 @@ void Cube::drawCube(const std::uint8_t cubeStencilId)
     glStencilFunc(GL_ALWAYS, static_cast<GLint>(cubeStencilId), 0xFF);
     glBegin(GL_QUADS);
 
-    const GLfloat texCoordsArr[4][2] = {
-        { 1.0f, 0.0f },
-        { 1.0f, 1.0f },
-        { 0.0f, 1.0f },
-        { 0.0f, 0.0f }
-    };
+    const GLfloat texCoordsArr[4][2] = {{1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}, {0.0f, 0.0f}};
 
     for (auto i = 0; i < std::size(s_faces); i++) {
         for (auto j = 0; j < std::size(s_faces[0]); j++) {
@@ -96,4 +88,4 @@ void Cube::drawCube(const std::uint8_t cubeStencilId)
     }
 }
 
-}
+} // namespace BraXaPsaIII

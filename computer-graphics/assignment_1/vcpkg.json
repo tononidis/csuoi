@@ -3,7 +3,10 @@
     "description": "A candycrash-like game implemented in C++ using OpenGL and GLFW.",
     "dependencies": [
         "freeglut",
-        "libx11",
+        {
+            "name": "libx11",
+            "platform": "linux"
+        },
         "stb",
         "opengl",
         "spdlog"

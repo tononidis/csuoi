@@ -3,7 +3,9 @@
 namespace BraXaPsaIII {
 
 namespace Menu {
-    void registerMenu();
-}
+
+void registerMenu();
 
 }
+
+} // namespace BraXaPsaIII

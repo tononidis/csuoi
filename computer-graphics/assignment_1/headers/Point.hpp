@@ -3,7 +3,7 @@
 namespace BraXaPsaIII {
 
 struct Point {
-public:
+  public:
     int x;
     int y;
 
@@ -20,8 +20,8 @@ public:
     Point downRight(int step = 1) const;
     Point downLeft(int step = 1) const;
 
-    bool operator<(const Point& other) const;
-    bool operator==(const Point& other) const;
+    bool operator<(const Point &other) const;
+    bool operator==(const Point &other) const;
 };
 
-}
+} // namespace BraXaPsaIII

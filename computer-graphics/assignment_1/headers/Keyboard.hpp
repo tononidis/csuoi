@@ -3,7 +3,9 @@
 namespace BraXaPsaIII {
 
 namespace Keyboard {
-    void registerKeyboard();
-}
+
+void registerKeyboard();
 
 }
+
+} // namespace BraXaPsaIII

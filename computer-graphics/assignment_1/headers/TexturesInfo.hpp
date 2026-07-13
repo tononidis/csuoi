@@ -6,11 +6,11 @@ namespace BraXaPsaIII {
 
 namespace TexturesInfo {
 
-    inline GLuint rock;
-    inline GLuint paper;
-    inline GLuint scissor;
+inline GLuint rock;
+inline GLuint paper;
+inline GLuint scissor;
 
-    void loadTextures();
-}
+void loadTextures();
+} // namespace TexturesInfo
 
-}
+} // namespace BraXaPsaIII

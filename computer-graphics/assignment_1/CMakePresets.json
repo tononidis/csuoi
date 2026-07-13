@@ -2,10 +2,26 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "debug",
+      "name": "Build",
+      "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
-        "VCPKG_ROOT": "../../submodules/vcpkg",
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../../submodules/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "Build-MinGW",
+      "inherits": "Build",
+      "generator": "MinGW Makefiles",
+      "environment": {
+        "VCPKG_DEFAULT_TRIPLET": "x64-mingw-dynamic"
+      },
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+        "CMAKE_C_COMPILER": "C:/ProgramData/mingw64/mingw64/bin/gcc.exe",
+        "CMAKE_CXX_COMPILER": "C:/ProgramData/mingw64/mingw64/bin/g++.exe",
+        "CMAKE_MAKE_PROGRAM": "C:/ProgramData/mingw64/mingw64/bin/mingw32-make.exe"
       }
     }
   ]

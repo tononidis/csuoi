@@ -4,8 +4,8 @@ namespace BraXaPsaIII {
 
 namespace WindowUtils {
 
-    void initializeWindow(int* argcp, char** argv);
-    
+void initializeWindow(int *argcp, char **argv);
+
 }
 
-};
+}; // namespace BraXaPsaIII
