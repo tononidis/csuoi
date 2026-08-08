@@ -1,9 +1,9 @@
 CompileFlags:
   CompilationDatabase: build
   Add:
-    - -std=c++17 -I./include
-    - -I./headers
-    - -I./vcpkg_installed/x64-linux/include
+    - -std=c++17
+    - -Iheaders
+    - -Ivcpkg_installed/x64-linux/include
 
 Index:
   Background: Build
