@@ -2,7 +2,12 @@
 
 #include "Config.hpp"
 
+#ifdef _WIN32
+#include <windows.h>
 #include <GL/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
 namespace BraXaPsaIII {
 

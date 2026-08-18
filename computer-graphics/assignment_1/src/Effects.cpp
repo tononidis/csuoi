@@ -2,7 +2,12 @@
 
 #include "GameManagement.hpp"
 
+#ifdef _WIN32
+#include <windows.h>
 #include <GL/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 
 #include <spdlog/spdlog.h>
 

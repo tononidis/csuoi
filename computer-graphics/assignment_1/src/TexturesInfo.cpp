@@ -5,9 +5,14 @@
 #include <stb_image.h>
 #endif
 
+#ifndef ASSET_DIR
+static_assert(false, "ASSET_DIR was not defined!")
+#endif
+
 #include <spdlog/spdlog.h>
 
 #include <mutex>
+#include <array>
 
 namespace BraXaPsaIII {
 
@@ -27,8 +32,10 @@ void loadTextures()
 {
     static std::once_flag loadOnceFlag;
     std::call_once(loadOnceFlag, []() {
-        const std::array texturePairsArr{TexturePair{"images/rock.bmp", rock}, TexturePair{"images/paper.bmp", paper},
-                                         TexturePair{"images/scissor.bmp", scissor}};
+        constexpr char rockAsset[]    = ASSET_DIR "/rock.bmp";
+        constexpr char paperAsset[]   = ASSET_DIR "/paper.bmp";
+        constexpr char scissorAsset[] = ASSET_DIR "/scissor.bmp";
+        const std::array texturePairsArr{TexturePair{rockAsset, rock}, TexturePair{paperAsset, paper}, TexturePair{scissorAsset, scissor}};
 
         for (const auto &texturePair : texturePairsArr) {
             SPDLOG_DEBUG("Loading texture from {} ...", texturePair.textureImgFile);

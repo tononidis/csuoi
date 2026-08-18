@@ -6,6 +6,6 @@ namespace Mouse {
 
 void registerMouse();
 
-}
+} // namespace Mouse
 
 } // namespace BraXaPsaIII

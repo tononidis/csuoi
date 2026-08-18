@@ -1,10 +1,9 @@
 #include "Mouse.hpp"
 
-#include "Cube.hpp"
-#include "Effects.hpp"
 #include "GameManagement.hpp"
-#include "Point.hpp"
+#include "Logic.hpp"
 
+#include <windows.h>
 #include <GL/glut.h>
 
 #include <spdlog/spdlog.h>
@@ -19,69 +18,24 @@ namespace Mouse {
 static void firstMouseEventHandler(int button, int state, int x, int y);
 static void secondMouseEventHandler(int button, int state, int x, int y);
 
-struct CubeClickedInfo {
-    std::pair<Point, Cube *> firstCubeSelection;
-    std::pair<Point, Cube *> secondCubeSelection;
-
-    CubeClickedInfo() : firstCubeSelection({Point{-1, -1}, nullptr}), secondCubeSelection({Point{-1, -1}, nullptr}) {}
-};
-
-static CubeClickedInfo s_g_cubeClickedInfo = CubeClickedInfo{};
+static std::pair<Point, Cube *> s_g_firstClickedCube = {Point{-1, -1}, nullptr};
+static std::pair<Point, Cube *> s_g_secondClickedCube = {Point{-1, -1}, nullptr};
 static std::uint8_t s_g_stencilRead = 0;
 
 static void clearClickStatus()
 {
-    auto firstCubeSelection = s_g_cubeClickedInfo.firstCubeSelection.second;
+    auto firstCubeSelection = s_g_firstClickedCube.second;
     if (firstCubeSelection != nullptr && firstCubeSelection->isClicked == true) {
         SPDLOG_TRACE("Changing first cube select status from [true - > false] ...");
 
         firstCubeSelection->isClicked = false;
     }
 
-    auto secondCubeSelection = s_g_cubeClickedInfo.secondCubeSelection.second;
+    auto secondCubeSelection = s_g_secondClickedCube.second;
     if (secondCubeSelection != nullptr && secondCubeSelection->isClicked == true) {
         SPDLOG_TRACE("Changing first cube select status from [true - > false] ...");
 
         secondCubeSelection->isClicked = false;
-    }
-}
-
-static bool arePointsNeighbor(const Point &pointA, const Point &pointB)
-{
-    auto dx = std::abs(pointA.x - pointB.x);
-    auto dy = std::abs(pointA.y - pointB.y);
-
-    bool isHorizontalNeighbor = dx == 1 && dy == 0;
-    bool isVerticalNeighbor = dx == 0 && dy == 1;
-
-    SPDLOG_DEBUG("isHorizontalNeighbor [{}], isVerticalNeighbor [{}], isNeighbor [{}]", isHorizontalNeighbor,
-                 isVerticalNeighbor, isHorizontalNeighbor || isVerticalNeighbor);
-
-    return isHorizontalNeighbor || isVerticalNeighbor;
-}
-
-static void swapCubesIfAreNeighbor()
-{
-    auto &firstPointSelection = s_g_cubeClickedInfo.firstCubeSelection.first;
-    auto &secondPointSelection = s_g_cubeClickedInfo.secondCubeSelection.first;
-
-    if (arePointsNeighbor(firstPointSelection, secondPointSelection) == true) {
-        SPDLOG_DEBUG("Swapping cube [{}, {}], with cube [{}, {}] ...", firstPointSelection.x, firstPointSelection.y,
-                     secondPointSelection.x, secondPointSelection.y);
-
-        auto firstCubeSelection = s_g_cubeClickedInfo.firstCubeSelection.second;
-        auto secondCubeSelection = s_g_cubeClickedInfo.secondCubeSelection.second;
-
-        if (firstCubeSelection == nullptr || secondCubeSelection == nullptr) {
-            SPDLOG_ERROR("firstCubeSelection = [{}] and/or  secondCubeSelection = [{}] is NULL",
-                         firstCubeSelection == nullptr ? "null" : "", secondCubeSelection == nullptr ? "null" : "");
-        }
-
-        else {
-            std::swap(firstCubeSelection->type, secondCubeSelection->type);
-            Effects::destroyCubes();
-            GameManagement::count++;
-        }
     }
 }
 
@@ -114,13 +68,13 @@ static void secondMouseEventHandler(int button, int state, int x, int y)
                 return;
             }
 
-            s_g_cubeClickedInfo.secondCubeSelection.first = Point{x, y};
-            s_g_cubeClickedInfo.secondCubeSelection.second = &GameManagement::cubes2dArr[x][y];
-            s_g_cubeClickedInfo.secondCubeSelection.second->isClicked = true;
+            s_g_secondClickedCube.first = Point{x, y};
+            s_g_secondClickedCube.second = &GameManagement::cubes2dArr[x][y];
+            s_g_secondClickedCube.second->isClicked = true;
 
             SPDLOG_DEBUG("Cube clicked (x, y) [{}, {}]", x, y);
 
-            swapCubesIfAreNeighbor();
+            Logic::swapNeighborCubes(s_g_firstClickedCube, s_g_secondClickedCube);
             clearClickStatus();
 
             glutPostRedisplay();
@@ -158,9 +112,9 @@ static void firstMouseEventHandler(int button, int state, int x, int y)
                 return;
             }
 
-            s_g_cubeClickedInfo.firstCubeSelection.first = Point{x, y};
-            s_g_cubeClickedInfo.firstCubeSelection.second = &GameManagement::cubes2dArr[x][y];
-            s_g_cubeClickedInfo.firstCubeSelection.second->isClicked = true;
+            s_g_firstClickedCube.first = Point{x, y};
+            s_g_firstClickedCube.second = &GameManagement::cubes2dArr[x][y];
+            s_g_firstClickedCube.second->isClicked = true;
 
             SPDLOG_DEBUG("Cube clicked (x, y) [{}, {}]", x, y);
 
