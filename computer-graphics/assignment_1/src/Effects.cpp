@@ -44,6 +44,7 @@ static void doBoardSoftRest(int x)
 {
     SPDLOG_DEBUG("Softly reseting the board ...");
     GameManagement::replaceEmptyCubesWithOutScoring();
+
     glutPostRedisplay();
 }
 
@@ -70,6 +71,7 @@ void destroyCubes(void)
         }
 
         glutTimerFunc(2000, destroyCubesEffect, 0);
+        GameManagement::gameState = GameManagement::GameState::EFFECT_IS_APPLIED;
         glutPostRedisplay();
     }
 }

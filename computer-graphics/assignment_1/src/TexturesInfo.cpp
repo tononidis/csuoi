@@ -35,7 +35,8 @@ void loadTextures()
         constexpr char rockAsset[]    = ASSET_DIR "/rock.bmp";
         constexpr char paperAsset[]   = ASSET_DIR "/paper.bmp";
         constexpr char scissorAsset[] = ASSET_DIR "/scissor.bmp";
-        const std::array texturePairsArr{TexturePair{rockAsset, rock}, TexturePair{paperAsset, paper}, TexturePair{scissorAsset, scissor}};
+        constexpr char bombAsset[] = ASSET_DIR "/bomb.bmp";
+        const std::array texturePairsArr{TexturePair{rockAsset, rock}, TexturePair{paperAsset, paper}, TexturePair{scissorAsset, scissor}, TexturePair{bombAsset, bomb}};
 
         for (const auto &texturePair : texturePairsArr) {
             SPDLOG_DEBUG("Loading texture from {} ...", texturePair.textureImgFile);
@@ -49,7 +50,7 @@ void loadTextures()
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             int width, height;
-            auto data = stbi_load(texturePair.textureImgFile, &width, &height, nullptr, 0);
+            auto data = stbi_load(texturePair.textureImgFile, &width, &height, nullptr, STBI_rgb);
             if (data != nullptr) {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             }

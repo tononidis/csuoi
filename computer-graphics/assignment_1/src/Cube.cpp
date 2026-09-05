@@ -65,6 +65,14 @@ void Cube::drawCube(const std::uint8_t cubeStencilId)
         glStencilMask(0xFF);
     }
 
+    else if (type == Type::BOMB) {
+        isClicked == false ? glColor3f(1.0f, 1.0f, 1.0f) : glColor3f(0.5f, 0.5f, 0.5f);
+
+        isTextureEnabled = true;
+        glBindTexture(GL_TEXTURE_2D, TexturesInfo::bomb);
+        glStencilMask(0xFF);
+    }
+
     if (isTextureEnabled == true) {
         glEnable(GL_TEXTURE_2D);
     }

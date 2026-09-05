@@ -14,6 +14,7 @@ namespace TexturesInfo {
 inline GLuint rock;
 inline GLuint paper;
 inline GLuint scissor;
+inline GLuint bomb;
 
 void loadTextures();
 } // namespace TexturesInfo

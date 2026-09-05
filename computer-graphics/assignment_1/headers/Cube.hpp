@@ -37,7 +37,7 @@ struct Cube {
         {3, 2, 6, 5}  // Right
     };
 
-    enum struct Type { INITAL, RED, BLUE, ROCK, PAPER, SCISSOR, EMPTY, __INVALID };
+    enum struct Type { INITAL, RED, BLUE, ROCK, PAPER, SCISSOR, EMPTY, BOMB, __INVALID };
 
     static auto constexpr type_to_string(Type t)
     {
@@ -56,6 +56,8 @@ struct Cube {
             return "SCISSOR";
         case Type::EMPTY:
             return "EMPTY";
+        case Type::BOMB:
+            return "BOMB";
         default:
             return "__INVALID";
         }
@@ -89,7 +91,7 @@ struct Cube {
         }
     }
 
-    static constexpr Type s_selectableTypes[5] = {Type::RED, Type::BLUE, Type::ROCK, Type::PAPER, Type::SCISSOR};
+    static constexpr Type s_selectableTypes[6] = {Type::RED, Type::BLUE, Type::ROCK, Type::PAPER, Type::SCISSOR, Type::BOMB};
 
     explicit Cube();
 

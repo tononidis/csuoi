@@ -43,7 +43,12 @@ void swapNeighborCubes(std::pair<Point, Cube *> &cubeA, std::pair<Point, Cube *>
         else {
             std::swap(firstCubeSelection->type, secondCubeSelection->type);
             Effects::destroyCubes();
-            GameManagement::count++;
+
+            GameManagement::numberOfMovesLeft--;
+            SPDLOG_DEBUG("Number of moves left = [{}]", GameManagement::numberOfMovesLeft);
+            if (GameManagement::numberOfMovesLeft <= 0) {
+                GameManagement::gameState = GameManagement::GameState::GAME_OVER;
+            }
         }
     }
 }

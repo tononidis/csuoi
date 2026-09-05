@@ -4,9 +4,10 @@
 #include "GameManagement.hpp"
 
 #ifdef _WIN32
-#include <windows.h>
 #include <GL/gl.h>
 #include <GL/glut.h>
+
+#include <windows.h>
 #else
 #include <GL/gl.h>
 #include <GL/glut.h>
@@ -44,7 +45,17 @@ static void displayScore(void)
     glPopMatrix();
 }
 
-static void displayEventHandler(void)
+static void displayGameOver(void)
+{
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+    displayScore();
+
+    glutSwapBuffers();
+}
+
+static void displayDefault(void)
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -65,6 +76,25 @@ static void displayEventHandler(void)
     }
 
     glutSwapBuffers();
+}
+
+static void displayEventHandler(void)
+{
+    if (GameManagement::gameState == GameManagement::GameState::GAME_OVER) {
+        displayGameOver();
+    }
+
+    else if (GameManagement::gameState == GameManagement::GameState::EFFECT_IS_APPLIED) {
+        GameManagement::gameState = GameManagement::GameState::NEW_GAME;
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        glutSwapBuffers();
+    }
+
+    else {
+        displayDefault();
+    }
 }
 
 void registerDisplay()

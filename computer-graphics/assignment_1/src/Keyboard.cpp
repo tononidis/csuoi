@@ -1,12 +1,12 @@
 #include "Keyboard.hpp"
 
 #ifdef _WIN32
-#include <windows.h>
 #include <GL/glut.h>
+
+#include <windows.h>
 #else
 #include <GL/glut.h>
 #endif
-
 
 #include <spdlog/spdlog.h>
 
@@ -26,20 +26,29 @@ static void keyboardEventHandler(unsigned char key, int x, int y)
 
 static void keyboardSpecialKeyEventHandler(int key, int x, int y)
 {
+    static constexpr auto step = 0.01;
+    static auto deltaX = 0.0f;
+    static auto deltaY = 0.0f;
+
     switch (key) {
-    case GLUT_KEY_LEFT: {
+
+    case GLUT_KEY_RIGHT: {
+        deltaX -= step;
         break;
     }
 
-    case GLUT_KEY_RIGHT: {
+    case GLUT_KEY_LEFT: {
+        deltaX += step;
         break;
     }
 
     case GLUT_KEY_UP: {
+        deltaY -= step;
         break;
     }
 
     case GLUT_KEY_DOWN: {
+        deltaY += step;
         break;
     }
 

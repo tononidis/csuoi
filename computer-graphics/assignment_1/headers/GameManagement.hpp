@@ -11,9 +11,13 @@ namespace BraXaPsaIII {
 
 namespace GameManagement {
 
-enum class GameState { DEFAULT, NEW_GAME, GAME_OVER, END_GAME };
+enum class GameState { DEFAULT, NEW_GAME, EFFECT_IS_APPLIED, GAME_OVER, END_GAME };
 
-inline std::uint32_t count = 0;
+#ifndef NUMBER_OF_MOVES
+#define NUMBER_OF_MOVES 20
+#endif
+
+inline auto numberOfMovesLeft = NUMBER_OF_MOVES;
 inline std::uint32_t score = 0;
 
 inline array2d<Cube, Config::GRID_SIZE, Config::GRID_SIZE> cubes2dArr;
